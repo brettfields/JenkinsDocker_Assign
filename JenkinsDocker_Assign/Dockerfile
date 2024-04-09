@@ -23,23 +23,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "JenkinsDocker_Assign.dll"]
-
-FROM jenkins/jenkins:lts
-USER root
-# Install dependencies and the .NET Core SDK
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        wget \
-        gnupg \
-        apt-transport-https \
-        && \
-    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
-    mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ && \
-    wget -q https://packages.microsoft.com/config/debian/10/prod.list && \
-    mv prod.list /etc/apt/sources.list.d/microsoft-prod.list && \
-    chown root:root /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
-    chown root:root /etc/apt/sources.list.d/microsoft-prod.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        dotnet-sdk-6.0
-USER jenkins
